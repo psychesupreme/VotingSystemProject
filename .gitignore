@@ -1,0 +1,10 @@
+# .NET API ignore files
+VotingSystemAPI/bin/
+VotingSystemAPI/obj/
+VotingSystemAPI/appsettings.json
+VotingSystemAPI/appsettings.Development.json
+
+# Angular UI ignore files
+VotingSystemUI/node_modules/
+VotingSystemUI/dist/
+VotingSystemUI/.angular/

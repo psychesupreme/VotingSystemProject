@@ -1,0 +1,99 @@
+<div style="max-width: 800px; margin: 50px auto; font-family: Arial, sans-serif; text-align: center;">
+  <h1>Kenya Multi-Election Portal 2026</h1>
+  <p style="color: #666;">Secure Frontend Voting Portal</p>
+
+  <div
+    style="background-color: #f8f9fa; padding: 30px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #dee2e6; text-align: left;">
+
+    <h3 style="margin-top: 0; text-align: center; color: #0056b3;">Step 1: Select Your Election</h3>
+    <div style="text-align: center; margin-bottom: 25px;">
+      <select [(ngModel)]="activeElection" (change)="message = ''"
+        style="width: 70%; padding: 12px; border-radius: 4px; border: 2px solid #0056b3; font-size: 16px; cursor: pointer;">
+        <option value="" disabled>-- Choose Election Type --</option>
+        <option value="University">University Student Elections</option>
+        <option value="National">Kenya General Election</option>
+      </select>
+    </div>
+
+    @if (activeElection) {
+    <div
+      style="display: flex; flex-direction: column; gap: 15px; max-width: 450px; margin: 0 auto; padding: 20px; border-top: 1px solid #dee2e6;">
+      <h3 style="margin-top: 0; text-align: center;">Cast Your {{ activeElection }} Ballot</h3>
+
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 5px;">I am Voter:</label>
+        <select [(ngModel)]="selectedVoterId"
+          style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+          <option value="0" disabled>-- Select Your Name --</option>
+          @for (v of filteredVoters; track v.id) {
+          <option [value]="v.id">{{ v.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 5px;">Voting For Position:</label>
+        <select [(ngModel)]="selectedPositionId"
+          style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+          <option value="0" disabled>-- Select Position --</option>
+          @for (p of filteredPositions; track p.id) {
+          <option [value]="p.id">{{ p.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label style="font-weight: bold; display: block; margin-bottom: 5px;">I Vote For Candidate:</label>
+        <select [(ngModel)]="selectedCandidateId"
+          style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+          <option value="0" disabled>-- Select Candidate --</option>
+          @for (c of filteredCandidates; track c.id) {
+          <option [value]="c.id">{{ c.name }}</option>
+          }
+        </select>
+      </div>
+
+      <button (click)="submitVote()"
+        style="margin-top: 10px; padding: 12px 24px; font-size: 16px; font-weight: bold; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px;">
+        Submit Secure {{ activeElection }} Vote
+      </button>
+    </div>
+    }
+
+    <h4 style="margin-top: 20px; text-align: center; color: #d9534f;">{{ message }}</h4>
+  </div>
+
+  <div
+    style="background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #dee2e6; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <h3 style="margin-top: 0; color: #0056b3;">Live Leaderboard</h3>
+    <p style="font-size: 12px; color: #888;">Data synced securely from MSSQL View</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; text-align: left;">
+      <thead>
+        <tr style="background-color: #0056b3; color: white;">
+          <th style="padding: 12px; border: 1px solid #dee2e6;">Position</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">Candidate Name</th>
+          <th style="padding: 12px; border: 1px solid #dee2e6;">Total Votes</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of filteredLeaderboard; track row.candidateName) {
+        <tr style="border-bottom: 1px solid #dee2e6; background-color: #fdfdfd;">
+          <td style="padding: 12px; border: 1px solid #dee2e6;">{{ row.position }}</td>
+          <td style="padding: 12px; border: 1px solid #dee2e6; font-weight: bold;">{{ row.candidateName }}</td>
+          <td style="padding: 12px; border: 1px solid #dee2e6; color: #28a745; font-weight: bold; font-size: 18px;">
+            {{ row.totalVotes }}
+          </td>
+        </tr>
+        }
+        @empty {
+        <tr>
+          <td colspan="3" style="padding: 20px; text-align: center; color: #777;">
+            {{ activeElection ? 'No results found for this election.' : 'Please select an election to view results.' }}
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
