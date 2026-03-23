@@ -18,7 +18,7 @@ export class Vote {
   // Base URL pointing to our .NET API. 
   // NOTE: Verify this port number matches your .NET terminal output!
   // If your terminal said 5277, change this line to 5277:
-  private baseUrl = 'https://localhost:5277/api/vote';
+  private baseUrl = 'http://localhost:5277/api/vote';
 
   constructor(private http: HttpClient) { }
 
