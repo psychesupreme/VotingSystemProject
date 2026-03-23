@@ -14,9 +14,8 @@ DROP TABLE IF EXISTS Staff;
 DROP TABLE IF EXISTS Department;
 GO
 
--- ============================================================================
--- 2. PHASE 1: STAFF ELECTION SCHEMA (3NF)
--- ============================================================================
+
+-- STAFF ELECTION SCHEMA (3NF)
 CREATE TABLE Department (
     DepartmentID INT PRIMARY KEY IDENTITY(1,1),
     DepartmentName VARCHAR(100) NOT NULL
@@ -60,11 +59,9 @@ CREATE TABLE Vote (
     VoteTime DATETIME DEFAULT GETDATE(),
     CONSTRAINT UQ_Staff_Position_Election UNIQUE(StaffID, PositionID, ElectionID)
 );
-GO -- (Executes Phase 1 schema creation)
+GO -- (Executes schema creation)
 
--- ============================================================================
--- 3. PHASE 2: SCHEMA EVOLUTION FOR CAMPUS ELECTION
--- ============================================================================
+-- SCHEMA EVOLUTION FOR CAMPUS ELECTION
 CREATE TABLE Course (
     CourseID INT PRIMARY KEY IDENTITY(1,1),
     CourseName VARCHAR(100) NOT NULL,
@@ -99,9 +96,7 @@ ALTER TABLE Vote ADD CONSTRAINT CHK_VoterType CHECK (
 ALTER TABLE Vote ADD CONSTRAINT UQ_Student_Position_Election UNIQUE(StudentID, PositionID, ElectionID);
 GO -- (Schema is now fully evolved and compiled)
 
--- ============================================================================
--- 4. AUTHENTIC DATA INSERTION (Staff & Students)
--- ============================================================================
+-- DATA INSERTION (Staff & Students)
 -- Insert Staff Data
 INSERT INTO Department (DepartmentName) VALUES 
 ('Human Resources'), ('Information Technology'), ('Finance'), ('Operations'), ('Marketing');
@@ -192,9 +187,7 @@ INSERT INTO Candidate (StudentID, PositionID, ElectionID) VALUES
 (2, 7, 2), (22, 7, 2); -- Finance Sec
 GO
 
--- ============================================================================
--- 5. ACID TRANSACTIONS (Testing the Integrity)
--- ============================================================================
+-- ACID TRANSACTIONS (Testing the Integrity)
 BEGIN TRY
     BEGIN TRANSACTION LiveVoting;
     
@@ -213,11 +206,9 @@ BEGIN CATCH
 END CATCH
 GO
 
--- ============================================================================
--- 6. RELATIONAL ALGEBRA PROOFS
--- ============================================================================
+-- RELATIONAL ALGEBRA 
 
--- A. UNION (Set Theory): Combining domain sets into a single voter registry
+-- UNION (Set Theory): Combining domain sets into a single voter registry
 SELECT FirstName, LastName, 'Staff Member' AS Demographics FROM Staff
 UNION ALL
 SELECT FirstName, LastName, 'Student' AS Demographics FROM Student
