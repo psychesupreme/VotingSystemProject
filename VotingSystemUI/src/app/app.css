@@ -124,11 +124,28 @@ h2 {
     transform: scale(0.98);
 }
 
-/* --- Leaderboard Table --- */
+/* --- Leaderboard Table & Scroller --- */
+.leaderboard-panel {
+    /* Limits the height of the card and adds a vertical scrollbar */
+    max-height: 450px;
+    overflow-y: auto;
+}
+
 .leaderboard-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+}
+
+.leaderboard-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    /* Makes the table header sticky so it stays visible while scrolling */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .leaderboard-table th,
@@ -136,12 +153,6 @@ h2 {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
-}
-
-.leaderboard-table th {
-    background-color: #f8fafc;
-    color: #475569;
-    font-weight: 600;
 }
 
 .vote-count {
