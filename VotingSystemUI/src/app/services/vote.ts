@@ -2,27 +2,31 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+// The interface matching our updated API requirements
+export interface VoteRequest {
+  voterId: number;
+  voterType: string;
+  candidateId: number;
+  positionId: number;
+  electionId: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class VoteService {
-  // We use the base URL for both endpoints now
-  private apiUrl = 'http://localhost:5277/api/Vote';
+export class Vote {
+  // Base URL pointing to our .NET API
+  private baseUrl = 'https://localhost:7123/api/vote';
 
   constructor(private http: HttpClient) { }
 
-  // POST request to cast a vote
-  castVote(voterId: number, candidateId: number, positionId: number): Observable<any> {
-    const payload = {
-      voterId: voterId,
-      candidateId: candidateId,
-      positionId: positionId
-    };
-    return this.http.post(`${this.apiUrl}/cast`, payload);
+  // Method to securely cast the vote
+  castVote(voteData: VoteRequest): Observable<any> {
+    return this.http.post(`${this.baseUrl}/cast`, voteData);
   }
 
-  // GET request to fetch the live leaderboard
-  getLeaderboard(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/leaderboard`);
+  // Method to fetch the live leaderboard based on the specific election ID
+  getLeaderboard(electionId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/leaderboard/${electionId}`);
   }
 }
