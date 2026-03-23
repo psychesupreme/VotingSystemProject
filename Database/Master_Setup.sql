@@ -1,4 +1,4 @@
-Voting Systems Project
+--Voting Systems Project
 
 -- DATABASE CLEARANCE (Safely dropping tables from child to parent) 
 
