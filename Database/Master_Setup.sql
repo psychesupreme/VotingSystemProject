@@ -1,11 +1,7 @@
-/* ============================================================================
-   SECURE MULTI-ELECTION SYSTEM - MASTER SCRIPT (ELECTIONS 1, 2 & 3)
-   Concepts: 3NF, Supertype/Subtype ERD, Exclusive Arc Constraints, Transactions
-   ============================================================================ */
+Voting Systems Project
 
--- ============================================================================
--- 1. DATABASE CLEARANCE (Safely dropping tables from child to parent)
--- ============================================================================
+-- DATABASE CLEARANCE (Safely dropping tables from child to parent) 
+
 DROP TABLE IF EXISTS Vote;
 DROP TABLE IF EXISTS Candidate;
 DROP TABLE IF EXISTS Election;
@@ -20,11 +16,7 @@ DROP TABLE IF EXISTS Staff;
 DROP TABLE IF EXISTS Department;
 GO
 
--- ============================================================================
--- 2. NORMALIZED SCHEMA CREATION (3NF & Domain Constraints)
--- ============================================================================
-
--- A. STAFF ENTITIES (Election 1)
+-- STAFF ENTITIES (Campus Elections)
 CREATE TABLE Department (
     DepartmentID INT PRIMARY KEY IDENTITY(1,1),
     DepartmentName VARCHAR(100) NOT NULL
@@ -37,7 +29,7 @@ CREATE TABLE Staff (
     DepartmentID INT FOREIGN KEY REFERENCES Department(DepartmentID)
 );
 
--- B. STUDENT ENTITIES (Election 2)
+-- STUDENT ENTITIES (Campus Elections)
 CREATE TABLE Course (
     CourseID INT PRIMARY KEY IDENTITY(1,1),
     CourseName VARCHAR(100) NOT NULL, Department VARCHAR(100) NOT NULL
@@ -50,7 +42,7 @@ CREATE TABLE Student (
     CourseID INT FOREIGN KEY REFERENCES Course(CourseID)
 );
 
--- C. RESIDENT ENTITIES (Election 3 - Geographic)
+--RESIDENT ENTITIES (Election 3 - Geographic)
 CREATE TABLE Zone (
     ZoneID INT PRIMARY KEY IDENTITY(1,1),
     ZoneName VARCHAR(100) NOT NULL
@@ -63,7 +55,7 @@ CREATE TABLE Resident (
     ZoneID INT FOREIGN KEY REFERENCES Zone(ZoneID)
 );
 
--- D. CORE ELECTION ENTITIES
+--CORE ELECTION ENTITIES
 CREATE TABLE Election (
     ElectionID INT PRIMARY KEY IDENTITY(1,1),
     ElectionName VARCHAR(100) NOT NULL, StartDate DATETIME NOT NULL, EndDate DATETIME NOT NULL
@@ -74,7 +66,7 @@ CREATE TABLE Position (
     PositionName VARCHAR(100) NOT NULL
 );
 
--- E. ASSOCIATIVE ENTITIES (Implementing the ERD Supertype/Subtype "Exclusive Arc")
+-- ASSOCIATIVE ENTITIES (ERD Supertype/Subtype)
 -- A candidate/vote MUST be exactly ONE of the following: Staff, Student, OR Resident.
 CREATE TABLE Candidate (
     CandidateID INT PRIMARY KEY IDENTITY(1,1),
@@ -119,12 +111,9 @@ CREATE TABLE Vote (
 );
 GO 
 
--- ============================================================================
 -- 3. DATA INSERTION: BASE ENTITIES
--- ============================================================================
 
--- (Staff and Student Inserts kept brief for this script's execution speed, 
--- but structurally identical to our previous success)
+-- (Staff and Student Inserts kept brief for this script's execution speed)
 INSERT INTO Department (DepartmentName) VALUES ('HR'), ('IT'), ('Finance');
 INSERT INTO Staff (FirstName, LastName, Email, PhoneNumber, DepartmentID) VALUES
 ('Kamau', 'Njoroge', 'kamau@co.ke', '0711000001', 1), ('Wanjiku', 'Mwangi', 'wanjiku@co.ke', '0711000002', 2),
@@ -135,10 +124,10 @@ INSERT INTO Student (FirstName, LastName, RegistrationNumber, PhoneNumber, Cours
 ('Brian', 'Kipruto', 'CS/001', '0722000001', 1), ('Alice', 'Wanjiru', 'BM/002', '0722000002', 2),
 ('Kevin', 'Otieno', 'CS/003', '0722000003', 1), ('Mercy', 'Akinyi', 'BM/004', '0722000004', 2);
 
--- === NEW: ELECTION 3 (GEOGRAPHIC - KILIMANI RESIDENTS ASSOCIATION) ===
+--(KILIMANI RESIDENTS ASSOCIATION)
 INSERT INTO Zone (ZoneName) VALUES ('Kilimani Zone A'), ('Kilimani Zone B'), ('Kilimani Zone C'), ('Kilimani Zone D');
 
--- 40 Authentic Kenyan Residents
+--Residents
 INSERT INTO Resident (FirstName, LastName, NationalID, PhoneNumber, ZoneID) VALUES
 ('John', 'Njuguna', 'ID20001', '0733000001', 1), ('Mary', 'Wambui', 'ID20002', '0733000002', 2),
 ('Peter', 'Ouko', 'ID20003', '0733000003', 3), ('Jane', 'Anyango', 'ID20004', '0733000004', 4),
@@ -162,9 +151,7 @@ INSERT INTO Resident (FirstName, LastName, NationalID, PhoneNumber, ZoneID) VALU
 ('Richard', 'Makori', 'ID20039', '0733000039', 3), ('Zuleikha', 'Ali', 'ID20040', '0733000040', 4);
 GO
 
--- ============================================================================
 -- 4. ELECTIONS, POSITIONS, AND CANDIDATES
--- ============================================================================
 INSERT INTO Election (ElectionName, StartDate, EndDate) VALUES 
 ('Staff Welfare Election', '2026-03-25', '2026-03-26'),
 ('Campus Student Council', '2026-04-10', '2026-04-11'),
@@ -176,7 +163,7 @@ INSERT INTO Position (PositionName) VALUES
 ('Student President'), ('Vice President'), -- Student (3,4)
 ('Estate Chairman'), ('Estate Treasurer'), ('Security Secretary'), ('Environment Secretary'); -- Resident (5,6,7,8)
 
--- Insert Candidates for Election 3 (8 Candidates, 2 per position)
+--(Candidates, positions)
 INSERT INTO Candidate (ResidentID, PositionID, ElectionID) VALUES 
 (1, 5, 3), (3, 5, 3),   -- John Njuguna vs Peter Ouko for Estate Chairman
 (5, 6, 3), (7, 6, 3),   -- David Kiprono vs Daniel Mutisya for Estate Treasurer
@@ -184,9 +171,7 @@ INSERT INTO Candidate (ResidentID, PositionID, ElectionID) VALUES
 (13, 8, 3), (15, 8, 3); -- George Otieno vs Evans Cheruiyot for Environment Secretary
 GO
 
--- ============================================================================
 -- 5. ACID TRANSACTIONS & RELATIONAL ALGEBRA
--- ============================================================================
 
 -- TRANSACTION: Simulating a secure resident vote
 BEGIN TRY
