@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// The interface matching our updated API requirements
+// The interface matching our updated API 3NF requirements
 export interface VoteRequest {
   voterId: number;
   voterType: string;
@@ -15,7 +15,8 @@ export interface VoteRequest {
   providedIn: 'root'
 })
 export class Vote {
-  // Base URL pointing to our .NET API
+  // Base URL pointing to our .NET API. 
+  // NOTE: Verify this port number matches your .NET terminal output!
   private baseUrl = 'https://localhost:7123/api/vote';
 
   constructor(private http: HttpClient) { }
